@@ -32,12 +32,20 @@ public class MemberControllerImpl   implements MemberController {
 	@Autowired
 	private MemberVO memberVO ;//memberVO빈 주입
 	
+	@RequestMapping(value = { "/","/main.do"}, method = RequestMethod.GET)
+	private ModelAndView main(HttpServletRequest request, HttpServletResponse response) {
+		String viewName = (String)request.getAttribute("viewName");
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName(viewName);
+		return mav;
+	}	
+	
 //全会員情報を照会	
 	@Override
 	@RequestMapping(value="/member/listMembers.do" ,method = RequestMethod.GET)
 	public ModelAndView listMembers(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String viewName = getViewName(request);
-//		String viewName = (String)request.getAttribute("viewName");
+//		String viewName = getViewName(request);
+		String viewName = (String)request.getAttribute("viewName");
 		//System.out.println("viewName: " +viewName);
 		logger.info("viewName: "+ viewName);
 		logger.debug("viewName: "+ viewName);
@@ -73,8 +81,11 @@ public class MemberControllerImpl   implements MemberController {
 //ログイン入力フォーム
 	@RequestMapping(value = { "/member/loginForm.do", "/member/memberForm.do", "/member/modMemberForm.do"  }, method =  RequestMethod.GET)
 //	@RequestMapping(value = "/member/*Form.do", method =  RequestMethod.GET)
-	public ModelAndView form(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String viewName = getViewName(request);
+	public ModelAndView form(@RequestParam(value= "action", required=false) String action, 
+							 HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String viewName = (String)request.getAttribute("viewName");
+		HttpSession session = request.getSession();
+		session.setAttribute("action", action);
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName(viewName);
 		return mav;
@@ -114,7 +125,12 @@ public class MemberControllerImpl   implements MemberController {
 		    HttpSession session = request.getSession();
 		    session.setAttribute("member", memberVO);
 		    session.setAttribute("isLogOn", true);
-		    mav.setViewName("redirect:/main.do");
+		    String action = (String) session.getAttribute("action");
+		    if(action != null) {
+		    	mav.setViewName("redirect:" + action);
+		    }else {
+		    	mav.setViewName("redirect:/main.do");
+		    }
 	}else { //ログアウトの状態の場合
 		    rAttr.addAttribute("result","loginFailed");
 		    mav.setViewName("redirect:/member/loginForm.do");
@@ -136,36 +152,36 @@ public class MemberControllerImpl   implements MemberController {
 
 	
 //URLの要請名から.doを消したViewの名前とその前のファイル名まで持ち出す。
-	private String getViewName(HttpServletRequest request) throws Exception {
-		String contextPath = request.getContextPath();
-		String uri = (String) request.getAttribute("javax.servlet.include.request_uri");
-		if (uri == null || uri.trim().equals("")) {
-			uri = request.getRequestURI();
-		}
-
-		int begin = 0;
-		if (!((contextPath == null) || ("".equals(contextPath)))) {
-			begin = contextPath.length();
-		}
-
-		int end;
-		if (uri.indexOf(";") != -1) {
-			end = uri.indexOf(";");
-		} else if (uri.indexOf("?") != -1) {
-			end = uri.indexOf("?");
-		} else {
-			end = uri.length();
-		}
-
-		String viewName = uri.substring(begin, end);
-		if (viewName.indexOf(".") != -1) {
-			viewName = viewName.substring(0, viewName.lastIndexOf("."));
-		}
-		if (viewName.lastIndexOf("/") != -1) {
-			viewName = viewName.substring(viewName.lastIndexOf("/", 1), viewName.length());
-		}
-		return viewName;
-	}
+//	private String getViewName(HttpServletRequest request) throws Exception {
+//		String contextPath = request.getContextPath();
+//		String uri = (String) request.getAttribute("javax.servlet.include.request_uri");
+//		if (uri == null || uri.trim().equals("")) {
+//			uri = request.getRequestURI();
+//		}
+//
+//		int begin = 0;
+//		if (!((contextPath == null) || ("".equals(contextPath)))) {
+//			begin = contextPath.length();
+//		}
+//
+//		int end;
+//		if (uri.indexOf(";") != -1) {
+//			end = uri.indexOf(";");
+//		} else if (uri.indexOf("?") != -1) {
+//			end = uri.indexOf("?");
+//		} else {
+//			end = uri.length();
+//		}
+//
+//		String viewName = uri.substring(begin, end);
+//		if (viewName.indexOf(".") != -1) {
+//			viewName = viewName.substring(0, viewName.lastIndexOf("."));
+//		}
+//		if (viewName.lastIndexOf("/") != -1) {
+//			viewName = viewName.substring(viewName.lastIndexOf("/", 1), viewName.length());
+//		}
+//		return viewName;
+//	}
 
 
 }

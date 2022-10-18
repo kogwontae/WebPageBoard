@@ -27,14 +27,14 @@
 	<c:choose>
 		<c:when test="${isLogOn == true  && member!= null}">
 			<h1>
-				<a href="${context}./member/listMembers.do"  class="listMembers">회원관리</a><br>
-			    <a href="#"  class="no-underline">게시판관리</a><br>
+				<a href="${context}./member/listMembers.do"  class="no-underline">회원관리</a><br>
+			    <a href="${context}./board/listArticles.do"  class="no-underline">게시판</a><br>
 		    </h1>
 		 </c:when>
 		 <c:otherwise>
 		 	<h1>
-				<a href="${context}./member/loginForm.do"  class="tologin1">회원관리</a><br>
-			    <a href="${context}./member/loginForm.do"  class="tologin2">게시판관리</a><br>
+				<a href="${context}./member/loginForm.do"  class="no-underline">회원관리</a><br>
+			    <a href="${context}./member/loginForm.do"  class="no-underline">게시판</a><br>
 		    </h1>			
 		 </c:otherwise>
 	</c:choose>	 
