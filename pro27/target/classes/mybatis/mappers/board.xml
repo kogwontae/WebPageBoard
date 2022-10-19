@@ -22,7 +22,7 @@
 	<select id="selectAllArticlesList" resultMap="articlesResult">
 	    <![CDATA[
 	      SELECT *
-	      from t_board 
+	      from t_board1 
 	      ORDER BY articleNO DESC		
 	    ]]>
 	</select>
@@ -30,67 +30,37 @@
 <!-- 새 글 추가 -->
 	<insert id="insertNewArticle" parameterType="java.util.Map">
 		<![CDATA[
-			INSERT into t_board(articleNO,  title, content, imageFileName, id)
-			VALUES(#{articleNO}, #{title}, #{content}, #{imageFileName}, #{id})
+			INSERT into t_board1(articleNO,  title, content, id)
+			VALUES(#{articleNO}, #{title}, #{content}, #{id})
 		]]>
 	</insert>
 
 <!-- 추가하는 새 글에대한 번호를 가져옴 -->
 	<select id="selectNewArticleNO" resultType="int">
 		<![CDATA[
-			SELECT  max(articleNO)+1 from t_board		
+			SELECT  max(articleNO)+1 from t_board1		
 		]]>
 	</select>
 
 	<select id="selectArticle" resultType="articleVO" parameterType="int">
     <![CDATA[
-      SELECT * from t_board
+      SELECT * from t_board1
       where articleNO = #{articleNO}		
     ]]>
 	</select>
 
 	<update id="updateArticle" parameterType="java.util.Map">
-		update t_board
+		update t_board1
 		set title=#{title},
 		content=#{content}
-		<if test="imageFileName!='' and imageFileName!=null">
-			, imageFileName=#{imageFileName}
-		</if>
 		where articleNO=#{articleNO}
 	</update>
 
 	<delete id="deleteArticle" parameterType="int">
     <![CDATA[
-      delete from t_board
-      where articleNO in (
-         SELECT articleNO FROM  t_board
-         START WITH articleNO = #{articleNO}
-         CONNECT BY PRIOR  articleNO = parentNO )
+      delete from t_board1
+      where 
+      articleNO = #{articleNO} 
     ]]>
 	</delete>
-
-	<!--다중 이미지 추가 SQL문 -->
-	<!-- <insert id="insertNewArticle" parameterType="java.util.Map"> <![CDATA[ 
-		insert into t_board(articleNO, id, title, content, imageFileName) values(#{articleNO}, 
-		#{id}, #{title}, #{content}, null) ]]> </insert> <insert id="insertNewImage" 
-		parameterType="java.util.Map"> <foreach item="item" collection="list" open="INSERT 
-		ALL" separator=" " close="SELECT * FROM DUAL" > INTO t_imageFile(imageFileNO, 
-		imageFileName, articleNO, regDate) VALUES (#{item.imageFileNO}, #{item.imageFileName}, 
-		#{item.articleNO}, sysdate) </foreach> </insert> -->
-
-<!-- 	<select id="selectNewImageFileNO" resultType="int"> -->
-<!--     <![CDATA[ -->
-<!--       SELECT  nvl(max(imageFileNO),0) from t_imageFile		 -->
-<!--     ]]> -->
-<!-- 	</select> -->
-
-
-<!-- 	<select id="selectImageFileList" resultMap="imgResult" -->
-<!-- 		parameterType="int"> -->
-<!--     <![CDATA[ -->
-<!--       SELECT * from t_imageFile -->
-<!--       where articleNO=#{articleNO}	 -->
-<!--     ]]> -->
-<!-- 	</select> -->
-
 </mapper>

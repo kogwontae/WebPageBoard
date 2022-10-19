@@ -15,7 +15,7 @@ public interface BoardController {
 //모든 글 나열	
 	public ModelAndView listArticles(HttpServletRequest request, HttpServletResponse response) throws Exception;
 //새글 추가
-	public ResponseEntity addNewArticle(MultipartHttpServletRequest multipartRequest,HttpServletResponse response) throws Exception;
+	public ResponseEntity addNewArticle(HttpServletRequest request, HttpServletResponse response) throws Exception;
 	
 	public ModelAndView viewArticle(@RequestParam("articleNO") int articleNO,
 		                     		HttpServletRequest request, HttpServletResponse response) throws Exception;

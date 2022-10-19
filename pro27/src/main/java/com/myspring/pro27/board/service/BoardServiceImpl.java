@@ -30,28 +30,6 @@ public class BoardServiceImpl  implements BoardService{
 		return boardDAO.insertNewArticle(articleMap);
 	}
 	
-	/*
-	@Override
-	public int addNewArticle(Map articleMap) throws Exception{
-		int articleNO = boardDAO.insertNewArticle(articleMap);
-		articleMap.put("articleNO", articleNO);
-		boardDAO.insertNewImage(articleMap);
-		return articleNO;
-	}
-	*/
-	/*
-	@Override
-	public Map viewArticle(int articleNO) throws Exception {
-		Map articleMap = new HashMap();
-		ArticleVO articleVO = boardDAO.selectArticle(articleNO);
-		List<ImageVO> imageFileList = boardDAO.selectImageFileList(articleNO);
-		articleMap.put("article", articleVO);
-		articleMap.put("imageFileList", imageFileList);
-		return articleMap;
-	}
-   */
-	
-	
 	@Override
 	public ArticleVO viewArticle(int articleNO) throws Exception {
 		ArticleVO articleVO = boardDAO.selectArticle(articleNO);

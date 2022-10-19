@@ -50,8 +50,9 @@
 	    <tr align="center">
 			<td width="5%">${article.articleNO }</td>
 			<td width="10%">${article.id }</td>
-			<td align='center'  width="35%">${article.title }</td>
-		  	<td  width="10%">${article.writeDate}</td> 
+			<td align='center'  width="35%">
+				<a class='cls1' href="${contextPath}/board/viewArticle.do?articleNO=${article.articleNO}">${article.title }</a></td>
+		  	<td width="10%">${article.writeDate}</td> 
 		</tr>
     </c:forEach>
     </c:when>
