@@ -51,12 +51,35 @@ request.setCharacterEncoding("UTF-8");
 	     form.appendChild(articleNOInput);
 	     document.body.appendChild(form);
 	     form.submit();
+	 }
 	 
+	 function fn_reply(){
+		 var frmReply = document.frmReply;
+		 
+		 if(frmReply.repl.value.length == 0 || frmReply.repl.value == ""){
+			 alert("내용을 입력해주세요.");
+		 }else{
+			 frmReply.submit();
+		 }
+	 }
+	 
+	 function fn_remove_reply(url,replyNO){
+		 var form = document.createElement("form");
+		 form.setAttribute("method", "post");
+		 form.setAttribute("action", url);
+	     var articleNOInput = document.createElement("input");
+	     articleNOInput.setAttribute("type","hidden");
+	     articleNOInput.setAttribute("name","replyNO");
+	     articleNOInput.setAttribute("value", replyNO);
+		 
+	     form.appendChild(articleNOInput);
+	     document.body.appendChild(form);
+	     form.submit();
 	 }
  </script>
 </head>
 <body>
-	<form name="frmArticle" method="post" action="${contextPath}" enctype="multipart/form-data">
+	<form name="frmArticle" method="post" action="${contextPath}" enctype="utf-8">
 		<table border=0 align="center">
 			<tr>
 				<td width=150 align="center" bgcolor=#FF9933>글번호</td>
@@ -97,5 +120,48 @@ request.setCharacterEncoding("UTF-8");
 			</tr>
 		</table>
 	</form>
+	<br><br>
+	<div class="re" style="padding-top: 10px">
+		<form name="frmReply" method="get" action="${contextPath}/board/addReply.do">
+			<table border=0 align="center">
+			<tr>
+				<td width="150" align="center">아이디:${member.id } </td>
+				<td><input type="text" name="r_content" id="repl" maxlength='100'  style="width:300px;height:50px"></td>
+				<td><input type="button" value="댓글달기" onClick="fn_reply()"></td>
+			</tr>
+			</table>	
+			<input type="hidden" id="articleNO" name="articleNO" value=${article.articleNO}>
+		</form>
+	</div>
+	<br><br>
+	<hr width="80%"></hr>
+	
+<table align="center" width="80%"  >
+	<c:choose>
+  	<c:when test="${replyList == null }" >
+	    <tr  height="10">
+	      <td colspan="4"><p align="center"><b><span style="font-size:9pt;">댓글이 없습니다.</span></b></p></td>  
+	    </tr>
+  	</c:when>
+  	<c:when test="${replyList !=null }" >
+  		<tr align="center">
+				<td width="10%">아이디</td>
+				<td align='center'  width="35%">내용</a></td>
+			  	<td width="10%">작성일자</td>
+		</tr>
+    	<c:forEach  var="reply" items="${replyList }" >
+		    <tr align="center">
+				<td width="10%">${reply.writerID }</td>
+				<td align='center'  width="35%">${reply.r_content }</a></td>
+			  	<td width="10%">${reply.r_date}</td> 
+			  	<c:if test="${member.id == reply.writerID }">
+			  		<td width="5%"><input type=button value="댓글삭제" onClick="fn_remove_reply('${contextPath}/board/removeReply.do', ${reply.replyNO})"></td> 
+			  	</c:if>	
+			</tr>
+    	</c:forEach>
+    </c:when>
+    </c:choose>
+</table>
+	
 </body>
 </html>

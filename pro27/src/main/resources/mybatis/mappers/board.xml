@@ -12,12 +12,6 @@
 		<result property="imageFileName" column="imageFileName" />
 	</resultMap>
 
-<!-- 	<resultMap id="imgResult" type="imageVO"> -->
-<!-- 		<result property="imageFileNO" column="imageFileNO" /> -->
-<!-- 		<result property="articleNO" column="articleNO" /> -->
-<!-- 		<result property="imageFileName" column="imageFileName" /> -->
-<!-- 	</resultMap> -->
-
 <!-- 모든 글 나열 -->
 	<select id="selectAllArticlesList" resultMap="articlesResult">
 	    <![CDATA[

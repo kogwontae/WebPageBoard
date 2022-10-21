@@ -28,7 +28,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.myspring.pro27.board.service.BoardService;
+import com.myspring.pro27.board.service.ReplyService;
 import com.myspring.pro27.board.vo.ArticleVO;
+import com.myspring.pro27.board.vo.ReplyVO;
 import com.myspring.pro27.member.vo.MemberVO;
 
 
@@ -40,8 +42,14 @@ public class BoardControllerImpl  implements BoardController{
 	@Autowired
 	private ArticleVO articleVO;
 	
+	@Autowired
+	private ReplyService replyService;
+	@Autowired
+	private ReplyVO replyVO;
+	
 	@Override
 	@RequestMapping(value= "/board/listArticles.do", method = {RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
 	public ModelAndView listArticles(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String viewName = (String)request.getAttribute("viewName");
 		List articlesList = boardService.listArticles();
@@ -97,10 +105,42 @@ public class BoardControllerImpl  implements BoardController{
 	public ModelAndView viewArticle(@RequestParam("articleNO") int articleNO,
                                     HttpServletRequest request, HttpServletResponse response) throws Exception{
 		String viewName = (String)request.getAttribute("viewName");
-		articleVO=boardService.viewArticle(articleNO);
+		articleVO = boardService.viewArticle(articleNO);
+		List replyList = replyService.listReply(articleNO);
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName(viewName);
 		mav.addObject("article", articleVO);
+		mav.addObject("replyList", replyList);
+		return mav;
+	}
+	
+	@RequestMapping(value="/board/addReply.do" ,method = RequestMethod.GET)
+	public ModelAndView addReply(@RequestParam("articleNO") int articleNO,
+                                    HttpServletRequest request, HttpServletResponse response) throws Exception{
+		request.setCharacterEncoding("utf-8");
+		Map<String,Object> replyMap = new HashMap<String, Object>();
+		
+		//r_content 매핑
+		Enumeration enu = request.getParameterNames();
+		while(enu.hasMoreElements()){
+			String name=(String)enu.nextElement();
+			String value=request.getParameter(name);
+			replyMap.put(name,value);
+		}
+		replyMap.remove("articleNO");
+		
+		//writerID매핑
+		HttpSession session = request.getSession();
+		MemberVO memberVO = (MemberVO) session.getAttribute("member");
+		String writerID = memberVO.getId();
+		replyMap.put("writerID", writerID);
+		
+		//articleNO매핑
+		replyMap.put("articleNO", articleNO);
+		
+		int replyNO = replyService.addNewReply(replyMap, articleNO);
+		
+		ModelAndView mav = new ModelAndView("redirect:/board/viewArticle.do?articleNO=articleNO");
 		return mav;
 	}
 	
@@ -177,5 +217,13 @@ public class BoardControllerImpl  implements BoardController{
 		}
 		return resEnt;
 	  }  
-
+	  
+	  @RequestMapping(value="/board/removeReply.do" ,method = RequestMethod.POST)
+	  public ModelAndView  removeReply(@RequestParam("replyNO") int replyNO,
+			  							HttpServletRequest request, HttpServletResponse response) throws Exception{
+		response.setContentType("text/html; charset=UTF-8");
+		replyService.removeReply(replyNO);
+		ModelAndView mav = new ModelAndView("redirect:/board/viewArticle.do");
+		return mav;
+	  }	
 }
