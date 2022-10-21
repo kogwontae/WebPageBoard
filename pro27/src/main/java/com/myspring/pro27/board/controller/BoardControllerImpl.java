@@ -36,7 +36,6 @@ import com.myspring.pro27.member.vo.MemberVO;
 
 @Controller("boardController")
 public class BoardControllerImpl  implements BoardController{
-	private static final String ARTICLE_IMAGE_REPO = "C:\\board\\article_image";
 	@Autowired
 	private BoardService boardService;
 	@Autowired
@@ -47,11 +46,14 @@ public class BoardControllerImpl  implements BoardController{
 	@Autowired
 	private ReplyVO replyVO;
 	
+	//掲示板の全Listを呼ぶ
 	@Override
 	@RequestMapping(value= "/board/listArticles.do", method = {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
 	public ModelAndView listArticles(HttpServletRequest request, HttpServletResponse response) throws Exception {
+//		Interceptorを使ってreturnするViewの名前をもらう
 		String viewName = (String)request.getAttribute("viewName");
+//		掲示板の全投稿文をListに設定、ModelAndViewにMappingする。
 		List articlesList = boardService.listArticles();
 		ModelAndView mav = new ModelAndView(viewName);
 		mav.addObject("articlesList", articlesList);
@@ -59,12 +61,13 @@ public class BoardControllerImpl  implements BoardController{
 		
 	}
 	
+	//新しい文を投稿
 	@Override
 	@RequestMapping(value="/board/addNewArticle.do" ,method = RequestMethod.POST)
 	public ResponseEntity addNewArticle(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		request.setCharacterEncoding("utf-8");
 		Map<String,Object> articleMap = new HashMap<String, Object>();
-		//request받은 name들을 articleMap에 매핑
+//　　　requestもらった name達を articleMapにMapping
 		Enumeration enu = request.getParameterNames();
 		while(enu.hasMoreElements()){
 			String name=(String)enu.nextElement();
@@ -72,6 +75,7 @@ public class BoardControllerImpl  implements BoardController{
 			articleMap.put(name,value);
 		}
 		
+//		SessionのID情報をMapping
 		HttpSession session = request.getSession();
 		MemberVO memberVO = (MemberVO) session.getAttribute("member");
 		String id = memberVO.getId();
@@ -82,15 +86,18 @@ public class BoardControllerImpl  implements BoardController{
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "text/html; charset=utf-8");
 		try {
-			//articleMap으로 새 글을 등록하고, articleNO를 반환
+//			articleMapを送って、DBに新しい文を登録
 			int articleNO = boardService.addNewArticle(articleMap);
-	
+			
+//			文の登録が成功した時
 			message = "<script>";
 			message += " alert('새글을 추가했습니다.');";
 			message += " location.href='"+request.getContextPath()+"/board/listArticles.do'; ";
 			message +=" </script>";
 		    resEnt = new ResponseEntity(message, responseHeaders, HttpStatus.CREATED);
 		}catch(Exception e) {
+			
+//			エラーの時
 			message = " <script>";
 			message +=" alert('오류가 발생했습니다. 다시 시도해 주세요.');";
 			message +=" location.href='"+request.getContextPath()+"/board/articleForm.do'; ";
@@ -101,10 +108,13 @@ public class BoardControllerImpl  implements BoardController{
 		return resEnt;
 	}
 	
+	//クリックした投稿文を見せる＋コメントも見せる
 	@RequestMapping(value="/board/viewArticle.do" ,method = RequestMethod.GET)
 	public ModelAndView viewArticle(@RequestParam("articleNO") int articleNO,
                                     HttpServletRequest request, HttpServletResponse response) throws Exception{
 		String viewName = (String)request.getAttribute("viewName");
+		
+//		FormからもらったarticleNOを使い、クリックした投稿文とその文のコメントをModelAndViewにMapping
 		articleVO = boardService.viewArticle(articleNO);
 		List replyList = replyService.listReply(articleNO);
 		ModelAndView mav = new ModelAndView();
@@ -114,13 +124,14 @@ public class BoardControllerImpl  implements BoardController{
 		return mav;
 	}
 	
+//	投稿文にあたる全コメントを見せる
 	@RequestMapping(value="/board/addReply.do" ,method = RequestMethod.GET)
 	public ModelAndView addReply(@RequestParam("articleNO") int articleNO,
                                     HttpServletRequest request, HttpServletResponse response) throws Exception{
 		request.setCharacterEncoding("utf-8");
 		Map<String,Object> replyMap = new HashMap<String, Object>();
 		
-		//r_content 매핑
+		//コメントの内容のMapping
 		Enumeration enu = request.getParameterNames();
 		while(enu.hasMoreElements()){
 			String name=(String)enu.nextElement();
@@ -129,33 +140,39 @@ public class BoardControllerImpl  implements BoardController{
 		}
 		replyMap.remove("articleNO");
 		
-		//writerID매핑
+		//writerIDのMapping
 		HttpSession session = request.getSession();
 		MemberVO memberVO = (MemberVO) session.getAttribute("member");
 		String writerID = memberVO.getId();
 		replyMap.put("writerID", writerID);
 		
-		//articleNO매핑
+		//articleNOのMapping
 		replyMap.put("articleNO", articleNO);
 		
+//		コメントのHashマップを送って、/board/viewArticle.doに戻る
 		int replyNO = replyService.addNewReply(replyMap, articleNO);
 		
 		ModelAndView mav = new ModelAndView("redirect:/board/viewArticle.do?articleNO=articleNO");
 		return mav;
 	}
 	
+//	入力Formに移動する
 	@RequestMapping(value = "/board/*Form.do", method = {RequestMethod.GET, RequestMethod.POST})
 	private ModelAndView form(HttpServletRequest request, HttpServletResponse response) throws Exception {
+//		各Formに移動できるよう、viewNameを使う
 		String viewName = (String)request.getAttribute("viewName");
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName(viewName);
 		return mav;
 	}
 	
+//	投稿文を修正する
 	 @RequestMapping(value="/board/modArticle.do" ,method = RequestMethod.POST)
-	  @ResponseBody
+	 @ResponseBody
 	  public ResponseEntity modArticle(MultipartHttpServletRequest multipartRequest,  
 			  							HttpServletResponse response) throws Exception{
+		 
+//		 addNewArticle.doと同じプロセス
 	    multipartRequest.setCharacterEncoding("utf-8");
 		Map<String,Object> articleMap = new HashMap<String, Object>();
 		Enumeration enu=multipartRequest.getParameterNames();
@@ -189,6 +206,7 @@ public class BoardControllerImpl  implements BoardController{
 	    return resEnt;
 	  }
 	 
+	//文を削除
 	  @Override
 	  @RequestMapping(value="/board/removeArticle.do" ,method = RequestMethod.POST)
 	  public ResponseEntity  removeArticle(@RequestParam("articleNO") int articleNO,
@@ -199,6 +217,8 @@ public class BoardControllerImpl  implements BoardController{
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("Content-Type", "text/html; charset=utf-8");
 		try {
+			
+//			FormからもらったarticleNOでDBの投稿文のFieldを削除
 			boardService.removeArticle(articleNO);
 			
 			message = "<script>";
@@ -218,10 +238,13 @@ public class BoardControllerImpl  implements BoardController{
 		return resEnt;
 	  }  
 	  
+//	  コメントの削除
 	  @RequestMapping(value="/board/removeReply.do" ,method = RequestMethod.POST)
 	  public ModelAndView  removeReply(@RequestParam("replyNO") int replyNO,
 			  							HttpServletRequest request, HttpServletResponse response) throws Exception{
 		response.setContentType("text/html; charset=UTF-8");
+		
+//		コメントのPrimary KeyであるreplyNOを使い、それにあたるコメントを削除
 		replyService.removeReply(replyNO);
 		ModelAndView mav = new ModelAndView("redirect:/board/viewArticle.do");
 		return mav;

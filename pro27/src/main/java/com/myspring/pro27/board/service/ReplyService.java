@@ -17,15 +17,18 @@ public class ReplyService {
 	@Autowired
 	ReplyDAO replyDAO;
 	
+//	コメントの内容
 	public List<ReplyVO> listReply(int articleNO) throws Exception{
 		List<ReplyVO> replyList = replyDAO.selectReplyList(articleNO);
 		return replyList;
 	}
 	
+//	コメント作成
 	public int addNewReply(Map replyMap, int articleNO) throws Exception{
 		return replyDAO.insertNewReply(replyMap, articleNO);
 	}
 	
+//	コメント削除
 	public void removeReply(int replyNO) throws Exception{
 		replyDAO.deleteReply(replyNO);
 	}

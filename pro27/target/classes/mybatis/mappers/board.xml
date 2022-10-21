@@ -12,7 +12,7 @@
 		<result property="imageFileName" column="imageFileName" />
 	</resultMap>
 
-<!-- 모든 글 나열 -->
+<!-- 全掲示文を並ぶ -->
 	<select id="selectAllArticlesList" resultMap="articlesResult">
 	    <![CDATA[
 	      SELECT *
@@ -21,7 +21,7 @@
 	    ]]>
 	</select>
 
-<!-- 새 글 추가 -->
+<!-- 新しい文の追加 -->
 	<insert id="insertNewArticle" parameterType="java.util.Map">
 		<![CDATA[
 			INSERT into t_board1(articleNO,  title, content, id)
@@ -29,13 +29,14 @@
 		]]>
 	</insert>
 
-<!-- 추가하는 새 글에대한 번호를 가져옴 -->
+<!-- 新しい文のarticleNOをもらう -->
 	<select id="selectNewArticleNO" resultType="int">
 		<![CDATA[
 			SELECT  max(articleNO)+1 from t_board1		
 		]]>
 	</select>
 
+<!-- articleNOをもらってDBから検索 -->
 	<select id="selectArticle" resultType="articleVO" parameterType="int">
     <![CDATA[
       SELECT * from t_board1
@@ -43,6 +44,7 @@
     ]]>
 	</select>
 
+<!-- 掲示文を修正 -->
 	<update id="updateArticle" parameterType="java.util.Map">
 		update t_board1
 		set title=#{title},
@@ -50,6 +52,7 @@
 		where articleNO=#{articleNO}
 	</update>
 
+<!-- 掲示文の削除 -->
 	<delete id="deleteArticle" parameterType="int">
     <![CDATA[
       delete from t_board1

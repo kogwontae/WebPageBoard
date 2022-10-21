@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+
+//Interceptorを使ってControllerのHandlerを呼ぶ前にURLからviewNameをもらう。コードを減らせる。
 public class ViewNameInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -27,6 +29,7 @@ public class ViewNameInterceptor extends HandlerInterceptorAdapter {
 			throws Exception {
 	}
 
+	//URLの要請名から.doを消したViewの名前とその前のファイル名まで持ち出す。
 	private String getViewName(HttpServletRequest request) throws Exception {
 		String contextPath = request.getContextPath();
 		String uri = (String) request.getAttribute("javax.servlet.include.request_uri");

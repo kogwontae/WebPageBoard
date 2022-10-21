@@ -22,11 +22,12 @@ request.setCharacterEncoding("UTF-8");
 </style>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript">
+///board/listArticlesに戻るメッソード
      function backToList(obj){
 	    obj.action="${contextPath}/board/listArticles.do";
 	    obj.submit();
      }
- 
+//  「修正する」ボタンを押したとき、文のタイトルと内容を修正できるようにし、必要なボタンを活性化
 	 function fn_enable(obj){
 		 document.getElementById("i_title").disabled=false;
 		 document.getElementById("i_content").disabled=false;
@@ -34,11 +35,13 @@ request.setCharacterEncoding("UTF-8");
 		 document.getElementById("tr_btn").style.display="none";
 	 }
 	 
+// 	 修正した文をDBに設定
 	 function fn_modify_article(obj){
 		 obj.action="${contextPath}/board/modArticle.do";
 		 obj.submit();
 	 }
 	 
+// 	 投稿文を削除
 	 function fn_remove_article(url,articleNO){
 		 var form = document.createElement("form");
 		 form.setAttribute("method", "post");
@@ -53,6 +56,7 @@ request.setCharacterEncoding("UTF-8");
 	     form.submit();
 	 }
 	 
+// 	 コメントの内容の有無チェック
 	 function fn_reply(){
 		 var frmReply = document.frmReply;
 		 
@@ -63,6 +67,7 @@ request.setCharacterEncoding("UTF-8");
 		 }
 	 }
 	 
+// 	 コメントの削除
 	 function fn_remove_reply(url,replyNO){
 		 var form = document.createElement("form");
 		 form.setAttribute("method", "post");
@@ -79,7 +84,7 @@ request.setCharacterEncoding("UTF-8");
  </script>
 </head>
 <body>
-	<form name="frmArticle" method="post" action="${contextPath}" enctype="utf-8">
+	<form name="frmArticle" method="post" action="${contextPath}" enctype="multipart/form-data">
 		<table border=0 align="center">
 			<tr>
 				<td width=150 align="center" bgcolor=#FF9933>글번호</td>

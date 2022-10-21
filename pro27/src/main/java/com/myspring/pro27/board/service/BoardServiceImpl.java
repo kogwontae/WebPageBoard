@@ -19,29 +19,32 @@ public class BoardServiceImpl  implements BoardService{
 	@Autowired
 	BoardDAO boardDAO;
 	
+	//掲示板の全Listを呼ぶ
 	public List<ArticleVO> listArticles() throws Exception{
 		List<ArticleVO> articlesList =  boardDAO.selectAllArticlesList();
         return articlesList;
 	}
 
-	
+	//新しい文を投稿
 	@Override
 	public int addNewArticle(Map articleMap) throws Exception{
 		return boardDAO.insertNewArticle(articleMap);
 	}
 	
+	//クリックした投稿文を見せる＋コメントも見せる
 	@Override
 	public ArticleVO viewArticle(int articleNO) throws Exception {
 		ArticleVO articleVO = boardDAO.selectArticle(articleNO);
 		return articleVO;
 	}
 	
-	
+	//文を修正
 	@Override
 	public void modArticle(Map articleMap) throws Exception {
 		boardDAO.updateArticle(articleMap);
 	}
 	
+	//文を削除
 	@Override
 	public void removeArticle(int articleNO) throws Exception {
 		boardDAO.deleteArticle(articleNO);

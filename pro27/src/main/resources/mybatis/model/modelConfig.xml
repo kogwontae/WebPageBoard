@@ -4,6 +4,7 @@
 
 <configuration>
 	<typeAliases>
+<!-- 		各VOオブジェクトを使うために -->
 		<typeAlias type="com.myspring.pro27.member.vo.MemberVO"  alias="memberVO" />
 		<typeAlias type="com.myspring.pro27.board.vo.ArticleVO"  alias="articleVO" />
 		<typeAlias type="com.myspring.pro27.board.vo.ReplyVO"  alias="ReplyVO" />

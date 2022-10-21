@@ -13,6 +13,7 @@
 		<result property="r_date" column="r_date" />
 	</resultMap>
 	
+<!-- 	articleNOにあたるコメントを呼ぶ -->
 	<select id="selectReply" resultMap="reResult" parameterType="int">
 		<![CDATA[
       SELECT * from t_reply
@@ -21,6 +22,7 @@
     ]]>
 	</select>
 	
+<!-- 	コメント作成 -->
 	<insert id="insertNewReply" parameterType="java.util.Map">
 		<![CDATA[
 			INSERT into t_reply(replyNO,  articleNO, writerID, r_content)
@@ -28,6 +30,7 @@
 		]]>
 	</insert>
 	
+<!-- 	新しいコメントのrepもらうOをもらう -->
 	<select id="selectNewReplyNO" resultType="int" parameterType="int">
 		<![CDATA[
 			SELECT max(replyNO)+1 from t_reply	
@@ -35,6 +38,7 @@
 		]]>
 	</select>
 	
+<!-- 	コメント削除 -->
 	<delete id="deleteReply" parameterType="int">
     <![CDATA[
       delete from t_reply

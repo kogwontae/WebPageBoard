@@ -17,13 +17,14 @@ public class BoardDAOImpl implements BoardDAO {
 	@Autowired
 	private SqlSession sqlSession;
 
+	//掲示板の全Listを呼ぶ
 	@Override
 	public List selectAllArticlesList() throws DataAccessException {
 		List<ArticleVO> articlesList = sqlSession.selectList("mapper.board.selectAllArticlesList");
 		return articlesList;
 	}
 
-	
+	//新しい文を投稿
 	@Override
 	public int insertNewArticle(Map articleMap) throws DataAccessException {
 		int articleNO = selectNewArticleNO();
@@ -32,36 +33,28 @@ public class BoardDAOImpl implements BoardDAO {
 		return articleNO;
 	}
     
+//	新しい文のArticleNOをもらう
 	private int selectNewArticleNO() throws DataAccessException {
 		return sqlSession.selectOne("mapper.board.selectNewArticleNO");
 	}
 	
+	//クリックした投稿文を見せる＋コメントも見せる
 	@Override
 	public ArticleVO selectArticle(int articleNO) throws DataAccessException {
 		return sqlSession.selectOne("mapper.board.selectArticle", articleNO);
 	}
 
+	//文を修正
 	@Override
 	public void updateArticle(Map articleMap) throws DataAccessException {
 		sqlSession.update("mapper.board.updateArticle", articleMap);
 	}
 
+	//文を削除
 	@Override
 	public void deleteArticle(int articleNO) throws DataAccessException {
 		sqlSession.delete("mapper.board.deleteArticle", articleNO);
 		
 	}
-//	
-//	@Override
-//	public List selectImageFileList(int articleNO) throws DataAccessException {
-//		List<ImageVO> imageFileList = null;
-//		imageFileList = sqlSession.selectList("mapper.board.selectImageFileList",articleNO);
-//		return imageFileList;
-//	}
-//	
-//	
-//	private int selectNewImageFileNO() throws DataAccessException {
-//		return sqlSession.selectOne("mapper.board.selectNewImageFileNO");
-//	}
 
 }

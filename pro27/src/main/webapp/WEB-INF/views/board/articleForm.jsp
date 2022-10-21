@@ -13,6 +13,8 @@
 <title>글쓰기창</title>
 <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript">
+
+// /board/listArticlesに戻るメッソード
   function backToList(obj){
     obj.action="${contextPath}/board/listArticles.do";
     obj.submit();

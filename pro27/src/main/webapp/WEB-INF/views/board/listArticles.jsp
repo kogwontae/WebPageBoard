@@ -18,6 +18,7 @@
   <title>글목록창</title>
 </head>
 <script>
+// 	ログインのチェックメッソード、ログインの状態じゃないと、loginFormにい移動する
 	function fn_articleForm(isLogOn,articleForm,loginForm){
 	  if(isLogOn != '' && isLogOn != 'false'){
 	    location.href=articleForm;
