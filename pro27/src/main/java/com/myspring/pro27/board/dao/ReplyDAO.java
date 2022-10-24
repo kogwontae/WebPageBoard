@@ -22,8 +22,9 @@ public class ReplyDAO {
 	}
 	
 //	コメント作成
-	public int insertNewReply(Map replyMap, int articleNO) throws DataAccessException{
-		int replyNO = sqlSession.insert("mapper.reply.selectNewReplyNO", articleNO);
+	public int insertNewReply(Map replyMap) throws DataAccessException{
+//		int replyNO = selectNewReplyNO();
+		int replyNO = sqlSession.selectOne("mapper.reply.selectNewReplyNO");
 		replyMap.put("replyNO", replyNO);
 		sqlSession.insert("mapper.reply.insertNewReply",replyMap);
 		return replyNO;

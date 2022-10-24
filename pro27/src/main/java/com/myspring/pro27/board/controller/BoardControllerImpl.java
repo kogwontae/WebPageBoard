@@ -46,6 +46,8 @@ public class BoardControllerImpl  implements BoardController{
 	@Autowired
 	private ReplyVO replyVO;
 	
+	String strURI = "";
+	
 	//掲示板の全Listを呼ぶ
 	@Override
 	@RequestMapping(value= "/board/listArticles.do", method = {RequestMethod.GET, RequestMethod.POST})
@@ -66,6 +68,7 @@ public class BoardControllerImpl  implements BoardController{
 	@RequestMapping(value="/board/addNewArticle.do" ,method = RequestMethod.POST)
 	public ResponseEntity addNewArticle(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		request.setCharacterEncoding("utf-8");
+		
 		Map<String,Object> articleMap = new HashMap<String, Object>();
 //　　　requestもらった name達を articleMapにMapping
 		Enumeration enu = request.getParameterNames();
@@ -113,6 +116,7 @@ public class BoardControllerImpl  implements BoardController{
 	public ModelAndView viewArticle(@RequestParam("articleNO") int articleNO,
                                     HttpServletRequest request, HttpServletResponse response) throws Exception{
 		String viewName = (String)request.getAttribute("viewName");
+		this.strURI = request.getRequestURI();
 		
 //		FormからもらったarticleNOを使い、クリックした投稿文とその文のコメントをModelAndViewにMapping
 		articleVO = boardService.viewArticle(articleNO);
@@ -150,9 +154,9 @@ public class BoardControllerImpl  implements BoardController{
 		replyMap.put("articleNO", articleNO);
 		
 //		コメントのHashマップを送って、/board/viewArticle.doに戻る
-		int replyNO = replyService.addNewReply(replyMap, articleNO);
+		int replyNO = replyService.addNewReply(replyMap);
 		
-		ModelAndView mav = new ModelAndView("redirect:/board/viewArticle.do?articleNO=articleNO");
+		ModelAndView mav = new ModelAndView("redirect:/board/listArticles.do");
 		return mav;
 	}
 	
@@ -246,7 +250,7 @@ public class BoardControllerImpl  implements BoardController{
 		
 //		コメントのPrimary KeyであるreplyNOを使い、それにあたるコメントを削除
 		replyService.removeReply(replyNO);
-		ModelAndView mav = new ModelAndView("redirect:/board/viewArticle.do");
+		ModelAndView mav = new ModelAndView("redirect:/board/listArticles.do");
 		return mav;
 	  }	
 }

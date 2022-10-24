@@ -16,7 +16,7 @@
 <!-- 	articleNOにあたるコメントを呼ぶ -->
 	<select id="selectReply" resultMap="reResult" parameterType="int">
 		<![CDATA[
-      SELECT * from t_reply
+      SELECT * from t_reply2
       where articleNO = #{articleNO}	
       ORDER BY replyNO DESC	
     ]]>
@@ -25,23 +25,22 @@
 <!-- 	コメント作成 -->
 	<insert id="insertNewReply" parameterType="java.util.Map">
 		<![CDATA[
-			INSERT into t_reply(replyNO,  articleNO, writerID, r_content)
+			INSERT into t_reply2(replyNO,  articleNO, writerID, r_content)
 			VALUES(#{replyNO}, #{articleNO}, #{writerID}, #{r_content})
 		]]>
 	</insert>
 	
 <!-- 	新しいコメントのrepもらうOをもらう -->
-	<select id="selectNewReplyNO" resultType="int" parameterType="int">
+	<select id="selectNewReplyNO" resultType="int">
 		<![CDATA[
-			SELECT max(replyNO)+1 from t_reply	
-			where articleNO = #{articleNO}
+			SELECT max(replyNO)+1 from t_reply2
 		]]>
 	</select>
 	
 <!-- 	コメント削除 -->
 	<delete id="deleteReply" parameterType="int">
     <![CDATA[
-      delete from t_reply
+      delete from t_reply2
       where 
       replyNO = #{replyNO} 
     ]]>

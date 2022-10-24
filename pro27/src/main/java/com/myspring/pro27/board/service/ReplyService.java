@@ -24,8 +24,8 @@ public class ReplyService {
 	}
 	
 //	コメント作成
-	public int addNewReply(Map replyMap, int articleNO) throws Exception{
-		return replyDAO.insertNewReply(replyMap, articleNO);
+	public int addNewReply(Map replyMap) throws Exception{
+		return replyDAO.insertNewReply(replyMap);
 	}
 	
 //	コメント削除

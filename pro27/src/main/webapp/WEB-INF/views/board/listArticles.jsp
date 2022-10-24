@@ -59,6 +59,16 @@
     </c:when>
     </c:choose>
 </table>
+
+<div style="width:600px; text-align:center; margin-top:10px;">
+	
+	<%
+	for(int i=1; i<=2; i++){
+		out.print(i + " ");
+	}
+	%>
+</div>
+
 <a  class="cls1"  href="javascript:fn_articleForm('${isLogOn}','${contextPath}/board/articleForm.do', 
                                                     '${contextPath}/member/loginForm.do')"><p class="cls2">글쓰기</p></a>
 </body>
