@@ -10,7 +10,7 @@ import com.myspring.pro27.board.vo.ArticleVO;
 
 public interface BoardDAO {
 	//掲示板の全Listを呼ぶ
-	public List selectAllArticlesList() throws DataAccessException;
+	public List selectAllArticlesList(Map pagingMap) throws DataAccessException;
 	//新しい文を投稿
 	public int insertNewArticle(Map articleMap) throws DataAccessException;
 	//クリックした投稿文を見せる＋コメントも見せる
@@ -19,5 +19,6 @@ public interface BoardDAO {
 	public void updateArticle(Map articleMap) throws DataAccessException;
 	//文を削除
 	public void deleteArticle(int articleNO) throws DataAccessException;
+	public int selectTotArticles() throws DataAccessException;
 	
 }

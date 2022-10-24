@@ -46,20 +46,29 @@ public class BoardControllerImpl  implements BoardController{
 	@Autowired
 	private ReplyVO replyVO;
 	
-	String strURI = "";
-	
 	//掲示板の全Listを呼ぶ
 	@Override
 	@RequestMapping(value= "/board/listArticles.do", method = {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
 	public ModelAndView listArticles(HttpServletRequest request, HttpServletResponse response) throws Exception {
-//		Interceptorを使ってreturnするViewの名前をもらう
+		request.setCharacterEncoding("utf-8");
 		String viewName = (String)request.getAttribute("viewName");
-//		掲示板の全投稿文をListに設定、ModelAndViewにMappingする。
-		List articlesList = boardService.listArticles();
+
+		String _section = request.getParameter("section");
+		String _pageNum = request.getParameter("pageNum");
+		int section = Integer.parseInt(((_section==null)? "1":_section) );
+		int pageNum = Integer.parseInt(((_pageNum==null)? "1":_pageNum));
+		Map<String, Integer> pagingMap = new HashMap<String, Integer>();
+		pagingMap.put("section", section);
+		pagingMap.put("pageNum", pageNum);
+		Map articlesMap=boardService.listArticles(pagingMap);
+		articlesMap.put("section", section);
+		articlesMap.put("pageNum", pageNum);
+		
 		ModelAndView mav = new ModelAndView(viewName);
-		mav.addObject("articlesList", articlesList);
+		mav.addObject("articlesMap", articlesMap);
 		return mav;
+		
 		
 	}
 	
@@ -116,7 +125,6 @@ public class BoardControllerImpl  implements BoardController{
 	public ModelAndView viewArticle(@RequestParam("articleNO") int articleNO,
                                     HttpServletRequest request, HttpServletResponse response) throws Exception{
 		String viewName = (String)request.getAttribute("viewName");
-		this.strURI = request.getRequestURI();
 		
 //		FormからもらったarticleNOを使い、クリックした投稿文とその文のコメントをModelAndViewにMapping
 		articleVO = boardService.viewArticle(articleNO);

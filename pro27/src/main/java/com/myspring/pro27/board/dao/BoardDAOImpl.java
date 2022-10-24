@@ -19,9 +19,13 @@ public class BoardDAOImpl implements BoardDAO {
 
 	//掲示板の全Listを呼ぶ
 	@Override
-	public List selectAllArticlesList() throws DataAccessException {
-		List<ArticleVO> articlesList = sqlSession.selectList("mapper.board.selectAllArticlesList");
+	public List selectAllArticlesList(Map pagingMap) throws DataAccessException {
+		List<ArticleVO> articlesList = sqlSession.selectList("mapper.board.selectAllArticlesList", pagingMap);
 		return articlesList;
+	}
+	
+	public int selectTotArticles() throws DataAccessException{
+		return sqlSession.selectOne("mapper.board.selectAllArticlesNo");
 	}
 
 	//新しい文を投稿
