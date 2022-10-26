@@ -8,6 +8,7 @@ import com.myspring.pro27.board.vo.ArticleVO;
 public interface BoardService {
 	//掲示板の全Listを呼ぶ
 	public Map listArticles(Map<String, Integer> pagingMap) throws Exception;
+	public int countBoard() throws Exception;
 	//新しい文を投稿
 	public int addNewArticle(Map articleMap) throws Exception;
 	//クリックした投稿文を見せる＋コメントも見せる

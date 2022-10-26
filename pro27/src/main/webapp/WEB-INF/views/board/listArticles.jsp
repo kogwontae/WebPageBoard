@@ -37,7 +37,7 @@
      <td >작성일</td>
   </tr>
 <c:choose>
-  <c:when test="${articlesList == null }" >
+  <c:when test="${articlesMap == null }" >
     <tr  height="10">
       <td colspan="4">
          <p align="center">
@@ -46,8 +46,8 @@
       </td>  
     </tr>
   </c:when>
-  <c:when test="${articlesList !=null }" >
-    <c:forEach  var="article" items="${articlesList }" >
+  <c:when test="${articlesMap !=null }" >
+    <c:forEach  var="article" items="${articlesMap }" >
 	    <tr align="center">
 			<td width="5%">${article.articleNO }</td>
 			<td width="10%">${article.id }</td>
@@ -60,43 +60,26 @@
     </c:choose>
 </table>
 
-<div class="cls2">
- <c:if test="${totArticles != null }" >
-      <c:choose>
-        <c:when test="${totArticles >100 }">  <!-- 글 개수가 100 초과인경우 -->
-	      <c:forEach   var="page" begin="1" end="10" step="1" >
-	         <c:if test="${section >1 && page==1 }">
-	          <a class="no-uline" href="${contextPath }/board/listArticles.do?section=${section-1}&pageNum=${(section-1)*10 +1 }">&nbsp; pre </a>
-	         </c:if>
-	          <a class="no-uline" href="${contextPath }/board/listArticles.do?section=${section}&pageNum=${page}">${(section-1)*10 +page } </a>
-	         <c:if test="${page ==10 }">
-	          <a class="no-uline" href="${contextPath }/board/listArticles.do?section=${section+1}&pageNum=${section*10+1}">&nbsp; next</a>
-	         </c:if>
-	      </c:forEach>
-        </c:when>
-        <c:when test="${totArticles ==100 }" >  <!--등록된 글 개수가 100개인경우  -->
-	      <c:forEach   var="page" begin="1" end="10" step="1" >
-	        <a class="no-uline"  href="#">${page } </a>
-	      </c:forEach>
-        </c:when>
-        
-        <c:when test="${totArticles< 100 }" >   <!--등록된 글 개수가 100개 미만인 경우  -->
-	      <c:forEach   var="page" begin="1" end="${totArticles/10 +1}" step="1" >
-	         <c:choose>
-	           <c:when test="${page==pageNum }">
-	            <a class="sel-page"  href="${contextPath }/board/listArticles.do?section=${section}&pageNum=${page}">${page } </a>
-	          </c:when>
-	          <c:otherwise>
-	            <a class="no-uline"  href="${contextPath }/board/listArticles.do?section=${section}&pageNum=${page}">${page } </a>
-	          </c:otherwise>
-	        </c:choose>
-	      </c:forEach>
-        </c:when>
-      </c:choose>
-    </c:if>
-</div>    
-<br><br>
+<div style="display: block; text-align: center;">		
+		<c:if test="${startPage != 1 }">
+			<a href="${contextPath}/board/listArticles.do?nowPage=${startPage - 1 }">&lt;</a>
+		</c:if>
+		<c:forEach begin="${startPage }" end="${endPage }" var="p">
+			<c:choose>
+				<c:when test="${p == nowPage }">
+					<b>${p }</b>
+				</c:when>
+				<c:when test="${p != nowPage }">
+					<a href="${contextPath}/board/listArticles.do?nowPage=${p }">${p }</a>
+				</c:when>
+			</c:choose>
+		</c:forEach>
+		<c:if test="${endPage != lastPage}">
+			<a href="${contextPath}/board/listArticles.do?nowPage=${endPage+1 }">&gt;</a>
+		</c:if>
+	</div>
 
+<br><br>
 <a  class="cls1"  href="javascript:fn_articleForm('${isLogOn}','${contextPath}/board/articleForm.do', 
                                                     '${contextPath}/member/loginForm.do')"><p class="cls2">글쓰기</p></a>
 </body>

@@ -12,16 +12,22 @@
 	</resultMap>
 
 <!-- 全掲示文を並ぶ -->
-	<select id="selectAllArticlesList" resultMap="articlesResult" parameterType="java.util.Map">
+	<select id="selectAllArticlesList" parameterType="java.util.Map" resultMap="articlesResult">
 	    <![CDATA[
 	      SELECT * from (
-	      select ROWNUM as recNum, articleNO, title, content, writeDate
+	      select ROWNUM as recNum, ID, articleNO, title, content, writeDate
 	      from (
 		  select * from t_board1
 		  ORDER BY articleNO DESC))
 		  WHERE
-		  recNum BETWEEN(#{section}-1)*100+(#{pageNum}-1)*10+1 and (section-1)*100+pageNum*10	
+		  recNum BETWEEN #{start} AND #{end}
 	    ]]>
+	</select>
+	
+	<select id="selectAllArticlesNo" resultType="int">
+		<![CDATA[
+			SELECT count(*) from t_board1		
+		]]>
 	</select>
 
 <!-- 新しい文の追加 -->
@@ -63,10 +69,4 @@
       articleNO = #{articleNO} 
     ]]>
 	</delete>
-	
-	<select id="selectAllArticlesNo" resultType="int">
-		<![CDATA[
-			SELECT count(articleNO) from t_board1		
-		]]>
-	</select>
 </mapper>

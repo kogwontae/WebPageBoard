@@ -23,10 +23,12 @@ public class BoardServiceImpl  implements BoardService{
 	public Map listArticles(Map<String, Integer> pagingMap) throws Exception{
 		Map articlesMap = new HashMap();
 		List<ArticleVO> articlesList =  boardDAO.selectAllArticlesList(pagingMap);
-		int totArticles = boardDAO.selectTotArticles();
 		articlesMap.put("articlesList", articlesList);
-		articlesMap.put("totArticles", totArticles);
-		return articlesMap;
+        return articlesMap;
+	}
+	
+	public int countBoard() throws Exception{
+		return boardDAO.selectTotArticles();
 	}
 
 	//新しい文を投稿

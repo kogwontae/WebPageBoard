@@ -13,7 +13,8 @@ import org.springframework.web.servlet.ModelAndView;
 public interface BoardController {
 	
 //掲示板の全Listを呼ぶ	
-	public ModelAndView listArticles(HttpServletRequest request, HttpServletResponse response) throws Exception;
+	public ModelAndView listArticles(HttpServletRequest request, HttpServletResponse response, 
+									@RequestParam(value="nowPage", required=false)String nowPage) throws Exception;
 //新しい文を投稿
 	public ResponseEntity addNewArticle(HttpServletRequest request, HttpServletResponse response) throws Exception;
 //クリックした投稿文を見せる＋コメントも見せる

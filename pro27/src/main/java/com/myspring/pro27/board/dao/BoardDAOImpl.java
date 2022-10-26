@@ -24,7 +24,8 @@ public class BoardDAOImpl implements BoardDAO {
 		return articlesList;
 	}
 	
-	public int selectTotArticles() throws DataAccessException{
+	@Override
+	public int selectTotArticles() throws DataAccessException {
 		return sqlSession.selectOne("mapper.board.selectAllArticlesNo");
 	}
 

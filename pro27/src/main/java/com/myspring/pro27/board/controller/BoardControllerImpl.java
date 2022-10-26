@@ -46,30 +46,81 @@ public class BoardControllerImpl  implements BoardController{
 	@Autowired
 	private ReplyVO replyVO;
 	
+	String strURI = "";
+	
 	//掲示板の全Listを呼ぶ
 	@Override
 	@RequestMapping(value= "/board/listArticles.do", method = {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
-	public ModelAndView listArticles(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		request.setCharacterEncoding("utf-8");
-		String viewName = (String)request.getAttribute("viewName");
-
-		String _section = request.getParameter("section");
-		String _pageNum = request.getParameter("pageNum");
-		int section = Integer.parseInt(((_section==null)? "1":_section) );
-		int pageNum = Integer.parseInt(((_pageNum==null)? "1":_pageNum));
-		Map<String, Integer> pagingMap = new HashMap<String, Integer>();
-		pagingMap.put("section", section);
-		pagingMap.put("pageNum", pageNum);
-		Map articlesMap=boardService.listArticles(pagingMap);
-		articlesMap.put("section", section);
-		articlesMap.put("pageNum", pageNum);
+	public ModelAndView listArticles(HttpServletRequest request, HttpServletResponse response,
+									@RequestParam(value="nowPage", required=false)String nowPage) throws Exception {
+									//현재 페이지
 		
+		if (nowPage == null) {
+			nowPage = "1";
+		}
+		int cntPage = 5;
+		int cntPerPage = 10; //한 페이지당 글 갯수
+		int total = boardService.countBoard(); //게시판의 총 글 갯수
+		
+		int lastPage = calcLastPage(total, cntPerPage); //제일 마지막 페이지
+		int endPage = calcEndPage(Integer.parseInt(nowPage), cntPage, lastPage); //끝페이지
+		int startPage = calcStartPage(endPage, cntPage);//시작페이지
+		
+		int end = calcEnd(Integer.parseInt(nowPage), cntPerPage); //SQL쿼리에 전달할 start, end
+		int start = calcStart(end, cntPerPage);
+		
+		
+		Map<String, Integer> pagingMap = new HashMap<String, Integer>();
+		pagingMap.put("start", start);
+		pagingMap.put("end", end);
+		
+//		掲示板の全投稿文をListに設定、ModelAndViewにMappingする。
+		Map articlesMap = boardService.listArticles(pagingMap);
+		
+		String viewName = (String)request.getAttribute("viewName"); //		Interceptorを使ってreturnするViewの名前をもらう
 		ModelAndView mav = new ModelAndView(viewName);
 		mav.addObject("articlesMap", articlesMap);
+		mav.addObject("nowPage", Integer.parseInt(nowPage));
+		mav.addObject("cntPage", cntPage);
+		mav.addObject("cntPerPage", cntPerPage);
+		mav.addObject("total", total);
+		mav.addObject("lastPage", lastPage);
+		mav.addObject("endPage", endPage);
+		mav.addObject("startPage", startPage);
+		
 		return mav;
 		
-		
+	}
+	
+	public int calcLastPage(int total, int cntPerPage) {
+		int lastPage = (int) Math.ceil((double)total / (double)cntPerPage);
+		return lastPage;
+	}
+	
+	public int calcEndPage(int nowPage, int cntPage, int lastPage) {
+		int endPage = ((int)Math.ceil((double)nowPage / (double)cntPage)) * cntPage;
+		if (lastPage < endPage) {
+			endPage = lastPage;
+		}
+		return endPage;
+	}
+	
+	public int calcStartPage(int endPage, int cntPage) {
+		int startPage = endPage - cntPage + 1;
+		if(startPage < 1) {
+			startPage = 1;
+		}
+		return startPage;
+	}
+	
+	public int calcEnd(int nowPage, int cntPerPage) {
+		int end = nowPage * cntPerPage; 
+		return end;
+	}
+	public int calcStart(int end, int cntPerPage) {
+		int start = end - cntPerPage + 1; 
+		return start;
 	}
 	
 	//新しい文を投稿
@@ -125,6 +176,7 @@ public class BoardControllerImpl  implements BoardController{
 	public ModelAndView viewArticle(@RequestParam("articleNO") int articleNO,
                                     HttpServletRequest request, HttpServletResponse response) throws Exception{
 		String viewName = (String)request.getAttribute("viewName");
+		this.strURI = request.getRequestURI();
 		
 //		FormからもらったarticleNOを使い、クリックした投稿文とその文のコメントをModelAndViewにMapping
 		articleVO = boardService.viewArticle(articleNO);
