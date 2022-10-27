@@ -9,13 +9,14 @@
 		<result property="title" column="title" />
 		<result property="content" column="content" />
 		<result property="writeDate" column="writeDate" />
+		<result property="id" column="id" />
 	</resultMap>
 
 <!-- 全掲示文を並ぶ -->
 	<select id="selectAllArticlesList" parameterType="java.util.Map" resultMap="articlesResult">
 	    <![CDATA[
 	      SELECT * from (
-	      select ROWNUM as recNum, ID, articleNO, title, content, writeDate
+	      select ROWNUM as recNum, id, articleNO, title, content, writeDate
 	      from (
 		  select * from t_board1
 		  ORDER BY articleNO DESC))

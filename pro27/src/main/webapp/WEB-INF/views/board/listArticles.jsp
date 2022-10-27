@@ -36,6 +36,8 @@
      <td >제목</td>
      <td >작성일</td>
   </tr>
+  
+<!--   DBに文がない場合 -->
 <c:choose>
   <c:when test="${articlesMap == null }" >
     <tr  height="10">
@@ -60,6 +62,7 @@
     </c:choose>
 </table>
 
+<!-- 文の下に表示されるページの数字 -->
 <div style="display: block; text-align: center;">		
 		<c:if test="${startPage != 1 }">
 			<a href="${contextPath}/board/listArticles.do?nowPage=${startPage - 1 }">&lt;</a>

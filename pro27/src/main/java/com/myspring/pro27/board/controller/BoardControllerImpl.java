@@ -54,23 +54,26 @@ public class BoardControllerImpl  implements BoardController{
 	@ResponseBody
 	public ModelAndView listArticles(HttpServletRequest request, HttpServletResponse response,
 									@RequestParam(value="nowPage", required=false)String nowPage) throws Exception {
-									//현재 페이지
+									//現在のページ
 		
 		if (nowPage == null) {
 			nowPage = "1";
 		}
-		int cntPage = 5;
-		int cntPerPage = 10; //한 페이지당 글 갯수
-		int total = boardService.countBoard(); //게시판의 총 글 갯수
+		int cntPage = 5; //下に数字で並ばれるページの数(1 2 3 4 5) 
+		int cntPerPage = 10; //一つのページにある文の数
+		int total = boardService.countBoard(); //掲示板の文の総計
 		
-		int lastPage = calcLastPage(total, cntPerPage); //제일 마지막 페이지
-		int endPage = calcEndPage(Integer.parseInt(nowPage), cntPage, lastPage); //끝페이지
-		int startPage = calcStartPage(endPage, cntPage);//시작페이지
+		int lastPage = calcLastPage(total, cntPerPage); //最後のページ
 		
-		int end = calcEnd(Integer.parseInt(nowPage), cntPerPage); //SQL쿼리에 전달할 start, end
+		//掲示文の下に数字で表示される初めのページと最後のページ
+		int endPage = calcEndPage(Integer.parseInt(nowPage), cntPage, lastPage); 
+		int startPage = calcStartPage(endPage, cntPage);
+		
+		//SQLクエリに送られるStart, End
+		int end = calcEnd(Integer.parseInt(nowPage), cntPerPage); 
 		int start = calcStart(end, cntPerPage);
 		
-		
+//		DBに送るStart, EndをMapping
 		Map<String, Integer> pagingMap = new HashMap<String, Integer>();
 		pagingMap.put("start", start);
 		pagingMap.put("end", end);
@@ -80,9 +83,10 @@ public class BoardControllerImpl  implements BoardController{
 		
 		String viewName = (String)request.getAttribute("viewName"); //		Interceptorを使ってreturnするViewの名前をもらう
 		ModelAndView mav = new ModelAndView(viewName);
+		
+//		必要な情報をModelAndViewのオブジェクトにMappingする
 		mav.addObject("articlesMap", articlesMap);
 		mav.addObject("nowPage", Integer.parseInt(nowPage));
-		mav.addObject("cntPage", cntPage);
 		mav.addObject("cntPerPage", cntPerPage);
 		mav.addObject("total", total);
 		mav.addObject("lastPage", lastPage);
@@ -93,11 +97,13 @@ public class BoardControllerImpl  implements BoardController{
 		
 	}
 	
+	//　最後のページを求める
 	public int calcLastPage(int total, int cntPerPage) {
 		int lastPage = (int) Math.ceil((double)total / (double)cntPerPage);
 		return lastPage;
 	}
 	
+	//	掲示文の下に数字で表示される初めのページと最後のページ
 	public int calcEndPage(int nowPage, int cntPage, int lastPage) {
 		int endPage = ((int)Math.ceil((double)nowPage / (double)cntPage)) * cntPage;
 		if (lastPage < endPage) {
@@ -105,7 +111,6 @@ public class BoardControllerImpl  implements BoardController{
 		}
 		return endPage;
 	}
-	
 	public int calcStartPage(int endPage, int cntPage) {
 		int startPage = endPage - cntPage + 1;
 		if(startPage < 1) {
@@ -114,6 +119,7 @@ public class BoardControllerImpl  implements BoardController{
 		return startPage;
 	}
 	
+	//	DBに送られるStart, End
 	public int calcEnd(int nowPage, int cntPerPage) {
 		int end = nowPage * cntPerPage; 
 		return end;
