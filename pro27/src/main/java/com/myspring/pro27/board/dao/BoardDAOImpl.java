@@ -24,6 +24,7 @@ public class BoardDAOImpl implements BoardDAO {
 		return articlesList;
 	}
 	
+	//掲示板の文のTotal数
 	@Override
 	public int selectTotArticles() throws DataAccessException {
 		return sqlSession.selectOne("mapper.board.selectAllArticlesNo");

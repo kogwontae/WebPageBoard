@@ -39,7 +39,7 @@
   
 <!--   DBに文がない場合 -->
 <c:choose>
-  <c:when test="${articlesMap == null }" >
+  <c:when test="${articlesList == null }" >
     <tr  height="10">
       <td colspan="4">
          <p align="center">
@@ -48,8 +48,8 @@
       </td>  
     </tr>
   </c:when>
-  <c:when test="${articlesMap !=null }" >
-    <c:forEach  var="article" items="${articlesMap }" >
+  <c:when test="${articlesList !=null }" >
+    <c:forEach  var="article" items="${articlesList }" >
 	    <tr align="center">
 			<td width="5%">${article.articleNO }</td>
 			<td width="10%">${article.id }</td>

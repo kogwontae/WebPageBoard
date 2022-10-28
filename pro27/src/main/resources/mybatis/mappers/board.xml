@@ -25,6 +25,7 @@
 	    ]]>
 	</select>
 	
+<!-- 	掲示板の文のTotal数 -->
 	<select id="selectAllArticlesNo" resultType="int">
 		<![CDATA[
 			SELECT count(*) from t_board1		

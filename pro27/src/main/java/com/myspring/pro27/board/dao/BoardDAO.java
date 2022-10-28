@@ -19,6 +19,7 @@ public interface BoardDAO {
 	public void updateArticle(Map articleMap) throws DataAccessException;
 	//文を削除
 	public void deleteArticle(int articleNO) throws DataAccessException;
+	//掲示板の文のTotal数
 	public int selectTotArticles() throws DataAccessException;
 	
 }

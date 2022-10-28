@@ -79,13 +79,13 @@ public class BoardControllerImpl  implements BoardController{
 		pagingMap.put("end", end);
 		
 //		掲示板の全投稿文をListに設定、ModelAndViewにMappingする。
-		Map articlesMap = boardService.listArticles(pagingMap);
+		List articlesList = boardService.listArticles(pagingMap);
 		
 		String viewName = (String)request.getAttribute("viewName"); //		Interceptorを使ってreturnするViewの名前をもらう
 		ModelAndView mav = new ModelAndView(viewName);
 		
 //		必要な情報をModelAndViewのオブジェクトにMappingする
-		mav.addObject("articlesMap", articlesMap);
+		mav.addObject("articlesList", articlesList);
 		mav.addObject("nowPage", Integer.parseInt(nowPage));
 		mav.addObject("cntPerPage", cntPerPage);
 		mav.addObject("total", total);

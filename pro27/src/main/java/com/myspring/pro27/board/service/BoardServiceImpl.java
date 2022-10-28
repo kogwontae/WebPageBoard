@@ -20,13 +20,11 @@ public class BoardServiceImpl  implements BoardService{
 	BoardDAO boardDAO;
 	
 	//掲示板の全Listを呼ぶ
-	public Map listArticles(Map<String, Integer> pagingMap) throws Exception{
-		Map articlesMap = new HashMap();
-		List<ArticleVO> articlesList =  boardDAO.selectAllArticlesList(pagingMap);
-		articlesMap.put("articlesList", articlesList);
-        return articlesMap;
+	public List listArticles(Map<String, Integer> pagingMap) throws Exception{
+		return boardDAO.selectAllArticlesList(pagingMap);
 	}
 	
+	//掲示板の文のTotal数
 	public int countBoard() throws Exception{
 		return boardDAO.selectTotArticles();
 	}
